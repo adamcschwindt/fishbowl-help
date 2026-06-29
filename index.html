@@ -1,0 +1,949 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Remington Supply Fishbowl Help Desk — searchable answers, SOP, and documentation.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>%F0%9F%90%9F</text></svg>">
+<title>Fishbowl Help Desk</title>
+<style>
+  :root{
+    --bg:#eef3f3;
+    --surface:#ffffff;
+    --surface-2:#f6fafa;
+    --ink:#143037;
+    --muted:#5b757c;
+    --faint:#8aa0a6;
+    --accent:#0e7c8f;
+    --accent-deep:#0a5460;
+    --accent-soft:#d7ecef;
+    --good:#1f8a5b;
+    --good-soft:#e2f3ea;
+    --warn:#b06d12;
+    --warn-soft:#fbeed6;
+    --border:#d6e3e3;
+    --border-strong:#bcd2d2;
+    --shadow:0 1px 2px rgba(20,48,55,.05),0 6px 20px rgba(20,48,55,.06);
+    --radius:14px;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.6;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:880px;margin:0 auto;padding:0 20px 80px}
+
+  header{padding:48px 0 26px}
+  .eyebrow{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);font-weight:700;margin:0 0 10px;display:flex;align-items:center;gap:9px}
+  .eyebrow .dot{width:9px;height:9px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 4px var(--accent-soft)}
+  h1{font-size:clamp(30px,5vw,42px);line-height:1.08;margin:0 0 12px;letter-spacing:-.02em;text-wrap:balance;font-weight:800;color:var(--accent-deep)}
+  .lede{font-size:17px;color:var(--muted);margin:0;max-width:62ch}
+
+  .search-wrap{margin:26px 0 14px;position:relative}
+  .search{width:100%;font-family:inherit;font-size:17px;color:var(--ink);padding:16px 18px 16px 50px;border:1.5px solid var(--border-strong);border-radius:12px;background:var(--surface);box-shadow:var(--shadow);transition:border-color .15s,box-shadow .15s}
+  .search:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 4px var(--accent-soft)}
+  .search::placeholder{color:var(--faint)}
+  .search-icon{position:absolute;left:18px;top:50%;transform:translateY(-50%);width:20px;height:20px;color:var(--faint);pointer-events:none}
+
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 4px}
+  .chip{font-family:inherit;font-size:13.5px;font-weight:600;color:var(--muted);background:var(--surface);border:1.5px solid var(--border);padding:7px 14px;border-radius:999px;cursor:pointer;transition:all .14s}
+  .chip:hover{border-color:var(--accent);color:var(--accent-deep)}
+  .chip[aria-pressed="true"]{background:var(--accent-deep);border-color:var(--accent-deep);color:#fff}
+  .chip:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+  .count{font-size:13px;color:var(--faint);margin:18px 0 6px;font-weight:500}
+
+  .group-label,.lib-label{font-size:12px;letter-spacing:.13em;text-transform:uppercase;color:var(--accent-deep);font-weight:700;margin:30px 0 12px;padding-bottom:8px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px}
+  .group-label.featured{color:var(--warn)}
+  .lib-intro{font-size:14px;color:var(--muted);margin:0 0 18px}
+  .lib-subhead{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);font-weight:700;margin:22px 0 10px}
+  .doc-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:6px}
+  @media (max-width:600px){.doc-grid{grid-template-columns:1fr}}
+  .doc-link{display:flex;flex-direction:column;gap:3px;padding:13px 15px;background:var(--surface);border:1px solid var(--border);border-radius:11px;text-decoration:none;box-shadow:var(--shadow);transition:border-color .14s,transform .14s}
+  .doc-link:hover{border-color:var(--accent);transform:translateY(-1px)}
+  .doc-link:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  .dl-title{font-weight:700;color:var(--accent-deep);font-size:15px;display:flex;align-items:center;gap:6px}
+  .dl-title .arr{width:13px;height:13px;color:var(--faint);flex-shrink:0}
+  .dl-desc{font-size:13px;color:var(--muted);line-height:1.45}
+
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:12px;box-shadow:var(--shadow);overflow:hidden;transition:border-color .15s}
+  .card[open]{border-color:var(--border-strong)}
+  .card.is-featured{border-left:4px solid var(--warn)}
+  summary{list-style:none;cursor:pointer;padding:18px 22px;display:flex;align-items:flex-start;gap:14px;font-weight:650;font-size:17px;color:var(--ink)}
+  summary::-webkit-details-marker{display:none}
+  summary:focus-visible{outline:2px solid var(--accent);outline-offset:-2px;border-radius:var(--radius)}
+  .q-tag{flex-shrink:0;font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--accent-deep);background:var(--accent-soft);padding:4px 9px;border-radius:6px;margin-top:2px;white-space:nowrap}
+  .card.is-featured .q-tag{color:var(--warn);background:var(--warn-soft)}
+  .q-text{flex:1}
+  .caret{flex-shrink:0;width:18px;height:18px;color:var(--faint);margin-top:4px;transition:transform .2s}
+  .card[open] .caret{transform:rotate(180deg)}
+
+  .answer{padding:0 22px 24px 22px;border-top:1px solid var(--border);margin-top:-2px}
+  .answer>*:first-child{margin-top:18px}
+  .answer p{margin:0 0 12px;color:#274349}
+  .step-head{font-size:13.5px;font-weight:700;color:var(--accent-deep);letter-spacing:.02em;margin:18px 0 9px;text-transform:uppercase}
+
+  .quick{background:var(--good-soft);border-radius:10px;padding:13px 16px;margin:0 0 18px;font-size:15.5px;display:flex;gap:11px;align-items:flex-start}
+  .quick b{color:var(--good)}
+  .quick .ic{flex-shrink:0;width:19px;height:19px;color:var(--good);margin-top:2px}
+
+  ol.steps{margin:0 0 14px;padding:0;list-style:none;counter-reset:s}
+  ol.steps li{position:relative;padding:0 0 0 38px;margin-bottom:10px;color:#274349;counter-increment:s}
+  ol.steps li::before{content:counter(s);position:absolute;left:0;top:0;width:25px;height:25px;border-radius:50%;background:var(--accent);color:#fff;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;font-variant-numeric:tabular-nums}
+  .answer strong{color:var(--accent-deep);font-weight:700}
+  kbd{font-family:inherit;font-size:13px;font-weight:650;background:var(--surface-2);border:1px solid var(--border-strong);border-radius:6px;padding:2px 8px;color:var(--accent-deep);white-space:nowrap}
+
+  .note{background:var(--warn-soft);border-radius:10px;padding:12px 15px;margin:0 0 14px;font-size:14.5px;color:#6b4710;display:flex;gap:10px;align-items:flex-start}
+  .note .ic{flex-shrink:0;width:18px;height:18px;color:var(--warn);margin-top:2px}
+
+  .reasons{margin:0 0 14px;padding:0;list-style:none}
+  .reasons li{padding:10px 0;border-bottom:1px dashed var(--border);color:#274349}
+  .reasons li:last-child{border-bottom:none}
+  .reasons b{color:var(--accent-deep)}
+
+  ul.check{margin:0 0 14px;padding:0;list-style:none}
+  ul.check li{position:relative;padding:6px 0 6px 30px;color:#274349;border-bottom:1px dashed var(--border)}
+  ul.check li:last-child{border-bottom:none}
+  ul.check li::before{content:"";position:absolute;left:0;top:9px;width:17px;height:17px;border-radius:5px;border:2px solid var(--border-strong)}
+
+  .src{font-size:13px;color:var(--faint);margin:6px 0 0}
+  .src a{color:var(--accent);text-decoration:none;border-bottom:1px solid var(--accent-soft)}
+  .src a:hover{border-bottom-color:var(--accent)}
+
+  .empty{display:none;text-align:center;padding:50px 20px;color:var(--muted)}
+  .empty svg{width:38px;height:38px;color:var(--faint);margin-bottom:12px}
+
+  footer{margin-top:46px;padding-top:22px;border-top:1px solid var(--border);font-size:13.5px;color:var(--faint);line-height:1.7}
+  footer a{color:var(--accent);text-decoration:none}
+  footer a:hover{text-decoration:underline}
+  .hidden{display:none!important}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <p class="eyebrow"><span class="dot"></span>Remington Supply &middot; Fishbowl Reference</p>
+    <h1>Fishbowl Help Desk</h1>
+    <p class="lede">Plain-English answers, our own step-by-step procedures, and a full directory of the official Fishbowl manual. Type a keyword or pick a topic to jump straight to an answer.</p>
+  </header>
+
+  <div class="search-wrap">
+    <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+    <input class="search" id="search" type="search" placeholder="Search: discount, reconcile, BOM, transfer, invoice&hellip;" autocomplete="off" aria-label="Search Fishbowl help">
+  </div>
+
+  <div class="chips" id="chips" role="group" aria-label="Filter by topic">
+    <button class="chip" data-cat="all" aria-pressed="true">All topics</button>
+    <button class="chip" data-cat="Receiving" aria-pressed="false">Receiving &amp; POs</button>
+    <button class="chip" data-cat="Items" aria-pressed="false">Items &amp; BOMs</button>
+    <button class="chip" data-cat="Manufacturing" aria-pressed="false">Manufacturing &amp; Transfers</button>
+    <button class="chip" data-cat="Amazon" aria-pressed="false">Amazon FBA</button>
+    <button class="chip" data-cat="Orders" aria-pressed="false">Customer Orders &amp; Shipping</button>
+    <button class="chip" data-cat="Discounts" aria-pressed="false">Discounts</button>
+    <button class="chip" data-cat="QuickBooks" aria-pressed="false">QuickBooks</button>
+    <button class="chip" data-cat="Inventory" aria-pressed="false">Inventory &amp; Scanning</button>
+    <button class="chip" data-cat="Routine" aria-pressed="false">Daily / Weekly Routine</button>
+    <button class="chip" data-cat="Docs" aria-pressed="false">📚 Docs Library</button>
+  </div>
+
+  <p class="count" id="count"></p>
+
+  <div id="results">
+
+    <!-- ============ FEATURED ============ -->
+    <div class="group-label featured" data-group="featured">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.6 6.6L22 9.2l-5 4.8 1.4 7L12 17.8 5.6 21 7 14 2 9.2l7.4-.6z"/></svg>
+      Your two questions
+    </div>
+
+    <details class="card is-featured" data-cat="Discounts" open>
+      <summary>
+        <span class="q-tag">Discounts</span>
+        <span class="q-text">How do I record a discount without manually calculating it?</span>
+        <svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg>
+      </summary>
+      <div class="answer">
+        <div class="quick">
+          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+          <div><b>Short answer:</b> Use Fishbowl's built-in <strong>Discount</strong> button. Type a <strong>percent (%)</strong> or a <strong>dollar amount</strong> and Fishbowl does the math for you &mdash; you never type the calculated number.</div>
+        </div>
+        <ol class="steps">
+          <li>Open the sales order and add your product line item(s) as usual.</li>
+          <li>Click the <kbd>Discount</kbd> button to the <strong>right of the item table</strong> on the sales order.</li>
+          <li>Enter the discount as a <strong>percentage</strong> (e.g. <kbd>10%</kbd>) or a <strong>fixed dollar amount</strong>. Fishbowl recalculates the line automatically.</li>
+          <li>To discount <strong>one line</strong>: apply it to that line. For <strong>several lines or the whole order</strong>: add a <kbd>Subtotal</kbd> row first, then put the discount right below it.</li>
+        </ol>
+        <p>Behind the scenes each line is figured as <strong>Unit Price &times; Quantity &minus; Discount</strong>, so the order total updates live.</p>
+        <div class="note">
+          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 8v5"/><circle cx="12" cy="16.5" r=".5" fill="currentColor"/><path d="M12 3 2 21h20z"/></svg>
+          <div><b>Time-saver:</b> Build discounts you use often (e.g. &ldquo;10% Contractor&rdquo;) once in the <strong>Discount module</strong> under the Sales group, then apply with one click.</div>
+        </div>
+        <p class="src">Source: <a href="https://help.fishbowlinventory.com/advanced/s/article/Discount" target="_blank" rel="noopener">Fishbowl &mdash; Discount</a> &middot; <a href="https://help.fishbowlinventory.com/advanced/s/article/Sales-Order" target="_blank" rel="noopener">Fishbowl &mdash; Sales Order</a></p>
+      </div>
+    </details>
+
+    <details class="card is-featured" data-cat="QuickBooks">
+      <summary>
+        <span class="q-tag">QuickBooks</span>
+        <span class="q-text">I reconciled the invoice in Fishbowl but can't see it in QuickBooks. Why?</span>
+        <svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg>
+      </summary>
+      <div class="answer">
+        <div class="quick">
+          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+          <div><b>Short answer:</b> Reconciling in Fishbowl only <em>queues</em> the invoice. Nothing reaches QuickBooks until you run the <strong>Export</strong> from Fishbowl's Accounting Integration module.</div>
+        </div>
+        <ol class="steps">
+          <li>Confirm the sales order is <strong>fully shipped/fulfilled</strong> in Fishbowl &mdash; shipping is what creates the invoice and cost-of-goods entry.</li>
+          <li>Open the <kbd>Accounting Integration</kbd> module (in the <strong>Accounting</strong> group).</li>
+          <li>If you use <strong>QuickBooks Desktop</strong>, open your company file so it can receive the data.</li>
+          <li>Click the <kbd>Export</kbd> button in the toolbar.</li>
+          <li>Choose <kbd>Standard Export</kbd> &mdash; sends everything fulfilled since the last successful export. A progress box lists each item.</li>
+        </ol>
+        <p>One shipped sales order becomes an <strong>Invoice</strong> in QuickBooks (the sale) plus a <strong>Journal Entry</strong> (cost of goods sold).</p>
+        <p class="step-head">If it's still missing after exporting</p>
+        <ul class="reasons">
+          <li><b>The export hasn't been run.</b> Most common cause &mdash; run a Standard Export.</li>
+          <li><b>It was &ldquo;Marked as Posted.&rdquo;</b> That skips transactions and they cannot be re-exported.</li>
+          <li><b>Account mapping.</b> Check the Fishbowl&rarr;QuickBooks account mappings.</li>
+          <li><b>It was edited directly in QuickBooks.</b> Don't &mdash; change it in Fishbowl and re-export, or the two won't match.</li>
+        </ul>
+        <p class="src">Source: <a href="https://help.fishbowlinventory.com/advanced/s/article/QuickBooks" target="_blank" rel="noopener">Fishbowl &mdash; QuickBooks</a> &middot; <a href="https://blog.tarabyte.com/blog/the-top-10-reasons-fishbowl-and-quickbooks-dont-match" target="_blank" rel="noopener">Top reasons FB &amp; QB don't match</a></p>
+      </div>
+    </details>
+
+    <!-- ============ RECEIVING & POs ============ -->
+    <div class="group-label" data-group="Receiving">Receiving &amp; Purchase Orders</div>
+
+    <details class="card" data-cat="Receiving">
+      <summary>
+        <span class="q-tag">SOP</span>
+        <span class="q-text">How do I receive inventory against a Purchase Order?</span>
+        <svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg>
+      </summary>
+      <div class="answer">
+        <ol class="steps">
+          <li>Open Fishbowl and go to the <kbd>Purchase Order</kbd> module.</li>
+          <li>Locate the correct PO. Confirm vendor, items, quantities, costs, and expected receipt.</li>
+          <li><strong>Issue</strong> the PO if it hasn't been issued yet.</li>
+          <li>Go to <kbd>Receiving</kbd> from the PO workflow.</li>
+          <li>Select the items being received and enter the <strong>actual quantity received</strong>.</li>
+          <li>Select the correct receiving location.</li>
+          <li><strong>Finish</strong> the receipt, then confirm inventory now shows in the correct location.</li>
+        </ol>
+        <div class="note">
+          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 8v5"/><circle cx="12" cy="16.5" r=".5" fill="currentColor"/><path d="M12 3 2 21h20z"/></svg>
+          <div>Do <b>not</b> cycle count new vendor receipts unless instructed &mdash; PO receiving preserves the purchasing trail.</div>
+        </div>
+        <p class="src">Source: Remington Supply Fishbowl SOP &middot; <a href="https://drive.google.com/file/d/19dfz1Fw36HkHWrFc7FU5TnhZI20nxps2/view" target="_blank" rel="noopener">View SOP</a></p>
+      </div>
+    </details>
+
+    <details class="card" data-cat="Receiving">
+      <summary>
+        <span class="q-tag">SOP</span>
+        <span class="q-text">How do I reconcile a receipt against the vendor bill (with freight / landed cost)?</span>
+        <svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg>
+      </summary>
+      <div class="answer">
+        <p>Do this <strong>after</strong> receiving inventory, so item cost is accurate before the accounting export.</p>
+        <ol class="steps">
+          <li>Open the received order in the <kbd>Receiving</kbd> module and click <kbd>Reconcile</kbd>.</li>
+          <li>Review each unreconciled received line. <strong>Uncheck</strong> any item that shouldn't be reconciled yet.</li>
+          <li>Enter the <strong>vendor bill</strong> details.</li>
+          <li>Add freight, shipping, duties, fees, or other extra costs if needed.</li>
+          <li><strong>Land</strong> those costs across the received items when the fees should become part of item cost.</li>
+          <li>Confirm received quantity, item cost, and landed-cost allocation.</li>
+          <li><strong>Finish</strong> the reconcile. The receipt is now ready for QuickBooks export.</li>
+        </ol>
+        <p class="src">Source: Remington Supply Fishbowl SOP &middot; <a href="https://drive.google.com/file/d/19dfz1Fw36HkHWrFc7FU5TnhZI20nxps2/view" target="_blank" rel="noopener">View SOP</a></p>
+      </div>
+    </details>
+
+    <details class="card" data-cat="Receiving">
+      <summary>
+        <span class="q-tag">SOP</span>
+        <span class="q-text">What if I only received part of the order, or items are over/short/damaged?</span>
+        <svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg>
+      </summary>
+      <div class="answer">
+        <p class="step-head">Partial receipt</p>
+        <ul class="reasons">
+          <li>Receive <b>only the quantity physically received</b>; leave the rest open.</li>
+          <li>Reconcile only the received items that match the vendor bill.</li>
+          <li>Receive and reconcile the remaining quantities later.</li>
+        </ul>
+        <p class="step-head">Over, short, or damaged</p>
+        <ul class="reasons">
+          <li>Compare packing slip, vendor bill, and physical count.</li>
+          <li>Receive only <b>usable</b> inventory; hold, reject, or document damaged inventory.</li>
+          <li>Leave missing items open if still expected.</li>
+          <li>Reconcile only what should be financially recognized.</li>
+        </ul>
+        <p class="src">Source: Remington Supply Fishbowl SOP &middot; <a href="https://drive.google.com/file/d/19dfz1Fw36HkHWrFc7FU5TnhZI20nxps2/view" target="_blank" rel="noopener">View SOP</a></p>
+      </div>
+    </details>
+
+    <details class="card" data-cat="Receiving">
+      <summary>
+        <span class="q-tag">SOP</span>
+        <span class="q-text">The PO exists in QuickBooks but not in Fishbowl. What do I do?</span>
+        <svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg>
+      </summary>
+      <div class="answer">
+        <ol class="steps">
+          <li>Export or recreate the open PO from QuickBooks.</li>
+          <li>Import or enter the PO into Fishbowl.</li>
+          <li>Confirm the PO details match the QuickBooks PO.</li>
+          <li>Receive against the PO in Fishbowl.</li>
+        </ol>
+        <p class="src">Source: Remington Supply Fishbowl SOP &middot; <a href="https://drive.google.com/file/d/19dfz1Fw36HkHWrFc7FU5TnhZI20nxps2/view" target="_blank" rel="noopener">View SOP</a></p>
+      </div>
+    </details>
+
+    <!-- ============ ITEMS & BOMs ============ -->
+    <div class="group-label" data-group="Items">Items &amp; Bills of Materials (-RG Raw Goods)</div>
+
+    <details class="card" data-cat="Items">
+      <summary>
+        <span class="q-tag">SOP</span>
+        <span class="q-text">What's the difference between a finished good and a -RG raw good?</span>
+        <svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg>
+      </summary>
+      <div class="answer">
+        <ul class="reasons">
+          <li><b>Finished Good</b> &mdash; the sellable item (eCommerce, Amazon, Sales Orders, Transfer Orders). Does <b>not</b> end in <kbd>-RG</kbd>, and should <b>not</b> keep the UPC once the -RG exists.</li>
+          <li><b>Raw Good (-RG)</b> &mdash; the inventory component used on the BOM and consumed during manufacturing. Ends in <kbd>-RG</kbd> and <b>keeps the UPC</b> for receiving and barcode scanning.</li>
+        </ul>
+        <p>Example: finished good <kbd>PS-B-BOMB-TALL</kbd> &rarr; raw good <kbd>PS-B-BOMB-TALL-RG</kbd>.</p>
+        <p class="src">Source: Remington Supply Fishbowl SOP &middot; <a href="https://help.fishbowlinventory.com/advanced/s/article/Part" target="_blank" rel="noopener">Fishbowl &mdash; Part</a></p>
+      </div>
+    </details>
+
+    <details class="card" data-cat="Items">
+      <summary>
+        <span class="q-tag">SOP</span>
+        <span class="q-text">How do I create a missing -RG raw good item?</span>
+        <svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg>
+      </summary>
+      <div class="answer">
+        <div class="quick">
+          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+          <div><b>Always duplicate the finished good</b> &mdash; never build the raw good by hand. Duplication copies inventory settings, expiration tracking, and other config, saving time and avoiding errors.</div>
+        </div>
+        <ol class="steps">
+          <li>Go to <kbd>Part</kbd>, search for and open the finished good. Verify it's the correct item.</li>
+          <li>Click <kbd>Duplicate</kbd>, then <kbd>OK</kbd>. Fishbowl creates &ldquo;Copy Of [Part Number]&rdquo;.</li>
+          <li>Remove &ldquo;Copy Of&rdquo; from the part number and add <kbd>-RG</kbd> to the end.</li>
+          <li>Review/update the description to mark it as the raw good version.</li>
+          <li>Verify tracking settings copied correctly, then <strong>save</strong> the new -RG item.</li>
+        </ol>
+        <p class="step-head">Move the UPC to the -RG item</p>
+        <ol class="steps">
+          <li>Verify the UPC copied to the new -RG item; save it with the UPC intact.</li>
+          <li>Open the original finished good, <strong>remove</strong> the UPC, and save.</li>
+          <li>Confirm the UPC now lives only on the -RG item (finished good = blank).</li>
+        </ol>
+        <div class="note">
+          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 8v5"/><circle cx="12" cy="16.5" r=".5" fill="currentColor"/><path d="M12 3 2 21h20z"/></svg>
+          <div>Duplicate <b>one item at a time</b> &mdash; Fishbowl only duplicates the item currently open. If you duplicate the wrong item, delete the copy and start over with the correct finished good.</div>
+        </div>
+        <p>If an error references a missing -RG part: copy that part number, remove the <kbd>-RG</kbd> suffix, find &amp; open the matching finished good, duplicate it, re-add <kbd>-RG</kbd>, and save.</p>
+        <p class="src">Source: Remington Supply Fishbowl SOP &middot; <a href="https://help.fishbowlinventory.com/advanced/s/article/Part" target="_blank" rel="noopener">Fishbowl &mdash; Part</a></p>
+      </div>
+    </details>
+
+    <details class="card" data-cat="Items">
+      <summary>
+        <span class="q-tag">SOP</span>
+        <span class="q-text">How do I create or update a BOM for a finished good?</span>
+        <svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg>
+      </summary>
+      <div class="answer">
+        <p>A BOM lets Fishbowl consume the raw good and create the finished good during manufacturing.</p>
+        <p class="step-head">Create a new BOM</p>
+        <ol class="steps">
+          <li>Open the <kbd>Bill of Materials</kbd> module and click <kbd>New BOM</kbd>.</li>
+          <li>Name it using the finished-good part number (or approved naming convention).</li>
+          <li>Add the <strong>finished good as the Output Item</strong> and set the output quantity.</li>
+          <li>Add the matching <kbd>-RG</kbd> item as an <strong>Input Component</strong> with its required quantity.</li>
+          <li>Add any packaging, prep materials, labels, boxes, or other tracked components.</li>
+          <li>Review all quantities and units of measure, then <strong>save</strong> and confirm the BOM is active.</li>
+        </ol>
+        <p class="step-head">Add a missing -RG to an existing BOM</p>
+        <ol class="steps">
+          <li>Open the existing BOM and click <kbd>Edit</kbd>.</li>
+          <li>Add the matching -RG item as a component with its quantity.</li>
+          <li>Review prep material and box components, save, and verify it's available for Manufacture Orders.</li>
+        </ol>
+        <p class="src">Source: Remington Supply Fishbowl SOP &middot; <a href="https://help.fishbowlinventory.com/advanced/s/article/Bill-of-Materials" target="_blank" rel="noopener">Fishbowl &mdash; Bill of Materials</a></p>
+      </div>
+    </details>
+
+    <details class="card" data-cat="Items">
+      <summary>
+        <span class="q-tag">SOP</span>
+        <span class="q-text">Checklist: is an item ready for production?</span>
+        <svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg>
+      </summary>
+      <div class="answer">
+        <p>Before production begins, confirm:</p>
+        <ul class="check">
+          <li>Finished good exists</li>
+          <li>Matching -RG item exists</li>
+          <li>UPC is on the -RG item</li>
+          <li>UPC has been removed from the finished good</li>
+          <li>Finished good is the BOM output</li>
+          <li>-RG item is the BOM component</li>
+          <li>Component quantities are correct</li>
+          <li>Packaging, labels, prep materials, and box components are all included</li>
+          <li>BOM is active and available for Manufacture Orders</li>
+        </ul>
+        <p class="src">Source: Remington Supply Fishbowl SOP &middot; <a href="https://drive.google.com/file/d/19dfz1Fw36HkHWrFc7FU5TnhZI20nxps2/view" target="_blank" rel="noopener">View SOP</a></p>
+      </div>
+    </details>
+
+    <!-- ============ MANUFACTURING & TRANSFERS ============ -->
+    <div class="group-label" data-group="Manufacturing">Manufacturing &amp; Transfers to Amazon</div>
+
+    <details class="card" data-cat="Manufacturing">
+      <summary>
+        <span class="q-tag">SOP</span>
+        <span class="q-text">How do I plan and create a Manufacture Order (MO)?</span>
+        <svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg>
+      </summary>
+      <div class="answer">
+        <p class="step-head">Weekly planning</p>
+        <ul class="reasons">
+          <li>Review Amazon inventory and current warehouse inventory.</li>
+          <li>Identify what needs to be built; confirm BOMs are accurate.</li>
+          <li>Review cleanup items (FNSKU naming, labor lines, non-inventory components).</li>
+          <li>Decide what finished goods will be produced this week.</li>
+        </ul>
+        <p class="step-head">Create the MO</p>
+        <ol class="steps">
+          <li>Go to the <kbd>Manufacture Order</kbd> module and create a new MO.</li>
+          <li>Name it using the weekly transfer date (or agreed format).</li>
+          <li>Add all planned finished goods and confirm quantities.</li>
+          <li><strong>Save</strong>, then <strong>Issue</strong> the MO.</li>
+        </ol>
+        <p class="step-head">Print &amp; build</p>
+        <ol class="steps">
+          <li>After issuing, print the <strong>MO Traveler</strong>, <strong>Work Order Travelers</strong>, and <strong>Pick Tickets</strong>.</li>
+          <li>Group pick tickets with the matching traveler and give the packet to production.</li>
+          <li>Start the work order, pick components, complete the build, and record completed quantities.</li>
+          <li>Finish the work order and confirm finished-goods inventory is available.</li>
+        </ol>
+        <p class="src">Source: Remington Supply Fishbowl SOP &middot; <a href="https://drive.google.com/file/d/19dfz1Fw36HkHWrFc7FU5TnhZI20nxps2/view" target="_blank" rel="noopener">View SOP</a></p>
+      </div>
+    </details>
+
+    <details class="card" data-cat="Manufacturing">
+      <summary>
+        <span class="q-tag">SOP</span>
+        <span class="q-text">How do I turn a Manufacture Order into a Transfer Order (MO &rarr; TO query)?</span>
+        <svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg>
+      </summary>
+      <div class="answer">
+        <p>Use the custom MO&rarr;TO Data Query so you don't enter Amazon transfer items twice.</p>
+        <ol class="steps">
+          <li>Complete the MO setup and copy the <strong>Manufacture Order number</strong>.</li>
+          <li>Go to <kbd>Reporting</kbd> &rarr; <kbd>Data</kbd> and run the <strong>MO to TO query</strong>.</li>
+          <li>Enter the MO number and <strong>export the results to CSV</strong>.</li>
+          <li>Go to <kbd>File</kbd> &rarr; <kbd>Import</kbd> &rarr; <kbd>Transfer Order</kbd> and import the CSV.</li>
+          <li>Confirm the Transfer Order was created.</li>
+        </ol>
+        <p class="step-head">Review the Transfer Order</p>
+        <ul class="reasons">
+          <li>Confirm all items, quantities, and the <b>From</b> location.</li>
+          <li>Confirm the <b>To</b> location is Amazon FBA / Amazon inbound / required destination.</li>
+          <li>Update the ship-to address if Amazon provides a specific location; add notes if Amazon splits the shipment.</li>
+          <li>Save, then <b>Issue</b> the Transfer Order.</li>
+        </ul>
+        <p class="src">Source: Remington Supply Fishbowl SOP &middot; <a href="https://drive.google.com/file/d/19dfz1Fw36HkHWrFc7FU5TnhZI20nxps2/view" target="_blank" rel="noopener">View SOP</a></p>
+      </div>
+    </details>
+
+    <details class="card" data-cat="Manufacturing">
+      <summary>
+        <span class="q-tag">SOP</span>
+        <span class="q-text">How do I pick, ship, and receive a Transfer Order into Amazon?</span>
+        <svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg>
+      </summary>
+      <div class="answer">
+        <ol class="steps">
+          <li><strong>Pick:</strong> open the issued TO &rarr; <kbd>Picking</kbd> &rarr; start the pick, pick from the correct location, confirm quantities, finish.</li>
+          <li><strong>Ship:</strong> go to <kbd>Shipping</kbd>, find the shipment, pack, confirm details, ship, and record tracking.</li>
+          <li><strong>Receive into Amazon:</strong> monitor Amazon receiving reports. When Amazon confirms a quantity, open the TO &rarr; <kbd>Receive</kbd> and receive <strong>only what Amazon confirmed</strong>.</li>
+          <li>Leave remaining quantities open if still in transit; continue weekly until Amazon receives everything.</li>
+          <li>If Amazon rejects or loses inventory, document it &mdash; scrap unusable inventory or receive it back if returned.</li>
+        </ol>
+        <p class="src">Source: Remington Supply Fishbowl SOP &middot; <a href="https://drive.google.com/file/d/19dfz1Fw36HkHWrFc7FU5TnhZI20nxps2/view" target="_blank" rel="noopener">View SOP</a></p>
+      </div>
+    </details>
+
+    <!-- ============ AMAZON FBA ============ -->
+    <div class="group-label" data-group="Amazon">Amazon FBA Orders</div>
+
+    <details class="card" data-cat="Amazon">
+      <summary>
+        <span class="q-tag">SOP</span>
+        <span class="q-text">How do Amazon FBA orders flow back into Fishbowl?</span>
+        <svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg>
+      </summary>
+      <div class="answer">
+        <ol class="steps">
+          <li>Inventory is transferred to Amazon; Amazon receives it.</li>
+          <li>Fishbowl inventory updates to Amazon FBA / Amazon inbound as appropriate.</li>
+          <li>An Amazon customer places an order and Amazon fulfills it.</li>
+          <li>The commerce integration <strong>imports the fulfilled order</strong> into Fishbowl.</li>
+          <li>Fishbowl closes the Sales Order based on the fulfilled Amazon shipment.</li>
+          <li>Fishbowl exports the order activity to QuickBooks per integration settings.</li>
+        </ol>
+        <p class="step-head">Monitoring</p>
+        <ul class="reasons">
+          <li>Review Amazon FBA inventory regularly; watch for low stock.</li>
+          <li>Create new Manufacture Orders <b>before</b> Amazon runs out.</li>
+          <li>Reconcile Amazon receipts weekly.</li>
+          <li>Investigate any Fishbowl order that can't close due to missing Amazon FBA inventory.</li>
+        </ul>
+        <p class="src">Source: Remington Supply Fishbowl SOP &middot; <a href="https://drive.google.com/file/d/19dfz1Fw36HkHWrFc7FU5TnhZI20nxps2/view" target="_blank" rel="noopener">View SOP</a></p>
+      </div>
+    </details>
+
+    <!-- ============ CUSTOMER ORDERS & SHIPPING ============ -->
+    <div class="group-label" data-group="Orders">Customer Orders &amp; Shipping</div>
+
+    <details class="card" data-cat="Orders">
+      <summary>
+        <span class="q-tag">SOP</span>
+        <span class="q-text">How do I process a Clear Conscience order from email to payment?</span>
+        <svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg>
+      </summary>
+      <div class="answer">
+        <p class="step-head">Order entry</p>
+        <ol class="steps">
+          <li>Clear Conscience sends the order by email.</li>
+          <li>In Fishbowl, create a new <kbd>Sales Order</kbd>; enter customer, items, quantity, pricing, and ship details.</li>
+          <li>Save, then send the order confirmation email <strong>directly from Fishbowl</strong>.</li>
+        </ol>
+        <p class="step-head">Batch &amp; pick</p>
+        <ol class="steps">
+          <li>Group Clear Conscience SOs into batches when appropriate; confirm all are issued and ready to pick.</li>
+          <li>Pick the orders, confirm picked quantities, and finish the picks.</li>
+        </ol>
+        <p class="step-head">Shipping</p>
+        <ol class="steps">
+          <li>Process the shipment in Fishbowl and buy the label through <strong>Shippo</strong>.</li>
+          <li>Use the <strong>customer FedEx account</strong> when buying the label.</li>
+          <li>Complete the shipment; confirm Fishbowl sends tracking/confirmation to the customer.</li>
+        </ol>
+        <p class="step-head">Invoicing &amp; payment</p>
+        <ol class="steps">
+          <li>Fulfilled SOs export from Fishbowl to QuickBooks as <strong>invoices</strong> (batched fulfillment may reflect only fulfilled items).</li>
+          <li>Review the invoice in QuickBooks and send the customer invoice report from QuickBooks.</li>
+          <li>Receive payment from the customer.</li>
+        </ol>
+        <p class="src">Source: Remington Supply Fishbowl SOP &middot; <a href="https://drive.google.com/file/d/19dfz1Fw36HkHWrFc7FU5TnhZI20nxps2/view" target="_blank" rel="noopener">View SOP</a></p>
+      </div>
+    </details>
+
+    <details class="card" data-cat="Orders">
+      <summary>
+        <span class="q-tag">SOP</span>
+        <span class="q-text">How do I buy a shipping label with ShipExpress / Shippo?</span>
+        <svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg>
+      </summary>
+      <div class="answer">
+        <ol class="steps">
+          <li>Confirm ShipExpress is installed/connected and carrier accounts are available in Shippo.</li>
+          <li>Open the Sales Order or <kbd>Shipping</kbd> module and select the <strong>ShipExpress</strong> option.</li>
+          <li>Choose carrier and service; use the correct <strong>customer carrier account</strong> when required.</li>
+          <li>Purchase and print the label.</li>
+          <li>Complete the shipment in Fishbowl; confirm tracking is saved and sent to the customer.</li>
+        </ol>
+        <p class="src">Source: Remington Supply Fishbowl SOP &middot; <a href="https://drive.google.com/file/d/19dfz1Fw36HkHWrFc7FU5TnhZI20nxps2/view" target="_blank" rel="noopener">View SOP</a></p>
+      </div>
+    </details>
+
+    <!-- ============ DISCOUNTS ============ -->
+    <div class="group-label" data-group="Discounts">Discounts</div>
+
+    <details class="card" data-cat="Discounts">
+      <summary>
+        <span class="q-tag">Discounts</span>
+        <span class="q-text">How do I apply one discount across several items at once?</span>
+        <svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg>
+      </summary>
+      <div class="answer">
+        <p>Line-item discounts only touch one line. To discount a group, add a <kbd>Subtotal</kbd> row above them on the order, then place the discount directly below the subtotal. It then applies to every line in that subtotal, and Fishbowl spreads the math for you.</p>
+        <p class="src">Source: <a href="https://help.fishbowlinventory.com/advanced/s/article/Sales-Order" target="_blank" rel="noopener">Fishbowl &mdash; Sales Order</a></p>
+      </div>
+    </details>
+
+    <details class="card" data-cat="Discounts">
+      <summary>
+        <span class="q-tag">Discounts</span>
+        <span class="q-text">Where do I create a reusable discount?</span>
+        <svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg>
+      </summary>
+      <div class="answer">
+        <p>Open the <kbd>Discount</kbd> module (in the <strong>Sales</strong> group). Create named discounts &mdash; percentage or fixed dollar amount &mdash; and reuse them on any sales order with one click, keeping discounts consistent across the team.</p>
+        <p class="src">Source: <a href="https://help.fishbowlinventory.com/advanced/s/article/Discount" target="_blank" rel="noopener">Fishbowl &mdash; Discount</a></p>
+      </div>
+    </details>
+
+    <!-- ============ QUICKBOOKS ============ -->
+    <div class="group-label" data-group="QuickBooks">QuickBooks &amp; Accounting</div>
+
+    <details class="card" data-cat="QuickBooks">
+      <summary>
+        <span class="q-tag">SOP</span>
+        <span class="q-text">What needs to be set up for QuickBooks at go-live?</span>
+        <svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg>
+      </summary>
+      <div class="answer">
+        <p class="step-head">Go-live requirements</p>
+        <ul class="reasons">
+          <li>Back up the current QuickBooks company file.</li>
+          <li>Restore/use the QuickBooks file on the <b>Fishbowl hosted server</b> and treat it as the main working file.</li>
+          <li>Avoid working in multiple QuickBooks files after go-live.</li>
+        </ul>
+        <p class="step-head">Account mapping</p>
+        <ul class="reasons">
+          <li>Map Clear Conscience items to the proper <b>Other Income</b> account.</li>
+          <li>Create/confirm the <b>Amazon Clearing Account</b> (an Accounts Receivable type if the setup requires it).</li>
+          <li>Confirm all Fishbowl item mappings <b>before</b> exporting transactions.</li>
+        </ul>
+        <p class="src">Source: Remington Supply Fishbowl SOP &middot; <a href="https://drive.google.com/file/d/19dfz1Fw36HkHWrFc7FU5TnhZI20nxps2/view" target="_blank" rel="noopener">View SOP</a></p>
+      </div>
+    </details>
+
+    <details class="card" data-cat="QuickBooks">
+      <summary>
+        <span class="q-tag">SOP</span>
+        <span class="q-text">What should I check every time I export to QuickBooks?</span>
+        <svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg>
+      </summary>
+      <div class="answer">
+        <ul class="check">
+          <li>Received and reconciled POs export properly</li>
+          <li>Fulfilled Sales Orders export as invoices</li>
+          <li>Amazon orders are using the Amazon order number</li>
+          <li>QuickBooks invoices look correct after export</li>
+          <li>Any unmapped item or account error is investigated immediately</li>
+        </ul>
+        <p class="src">Source: Remington Supply Fishbowl SOP &middot; <a href="https://drive.google.com/file/d/19dfz1Fw36HkHWrFc7FU5TnhZI20nxps2/view" target="_blank" rel="noopener">View SOP</a></p>
+      </div>
+    </details>
+
+    <details class="card" data-cat="QuickBooks">
+      <summary>
+        <span class="q-tag">QuickBooks</span>
+        <span class="q-text">Standard Export vs. Repost vs. Mark as Posted?</span>
+        <svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg>
+      </summary>
+      <div class="answer">
+        <ul class="reasons">
+          <li><b>Standard Export</b> &mdash; the everyday option. Sends everything fulfilled/completed since the last successful export.</li>
+          <li><b>Repost</b> &mdash; re-sends all entries in a date range. Recovery only; can create duplicates if misused.</li>
+          <li><b>Mark as Posted</b> &mdash; flags transactions as done <em>without</em> sending them, and they can't be re-exported. Only on an accountant's instruction.</li>
+        </ul>
+        <p class="src">Source: <a href="https://help.fishbowlinventory.com/advanced/s/article/QuickBooks" target="_blank" rel="noopener">Fishbowl &mdash; QuickBooks</a></p>
+      </div>
+    </details>
+
+    <details class="card" data-cat="QuickBooks">
+      <summary>
+        <span class="q-tag">QuickBooks</span>
+        <span class="q-text">Why don't my Fishbowl and QuickBooks numbers match?</span>
+        <svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg>
+      </summary>
+      <div class="answer">
+        <p>Usual culprits, most common first:</p>
+        <ul class="reasons">
+          <li><b>Account mapping is off.</b> Always start here.</li>
+          <li><b>Someone edited/deleted a transaction in QuickBooks</b> instead of fixing it in Fishbowl. Fix in Fishbowl and re-export.</li>
+          <li><b>Duplicate entries</b> from creating inventory transactions directly in QuickBooks.</li>
+          <li><b>Back-dated or forward-dated transactions</b> throw off point-in-time reconciliation.</li>
+          <li><b>The systems weren't reconciled at go-live</b>, so a gap carries forward.</li>
+        </ul>
+        <p>Golden rule: <strong>record and change everything in Fishbowl, then export to QuickBooks.</strong></p>
+        <p class="src">Source: <a href="https://blog.tarabyte.com/blog/the-top-10-reasons-fishbowl-and-quickbooks-dont-match" target="_blank" rel="noopener">Top 10 reasons FB &amp; QB don't match</a></p>
+      </div>
+    </details>
+
+    <details class="card" data-cat="QuickBooks">
+      <summary>
+        <span class="q-tag">QuickBooks</span>
+        <span class="q-text">Can I just fix a sales order or invoice directly in QuickBooks?</span>
+        <svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg>
+      </summary>
+      <div class="answer">
+        <div class="note">
+          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 8v5"/><circle cx="12" cy="16.5" r=".5" fill="currentColor"/><path d="M12 3 2 21h20z"/></svg>
+          <div><b>No.</b> Fishbowl is the system of record for anything inventory-related. Change it in QuickBooks and the accounts drift apart.</div>
+        </div>
+        <p>Correct it in Fishbowl, then run the export again so QuickBooks matches.</p>
+        <p class="src">Source: <a href="https://blog.tarabyte.com/blog/quick-guide-for-your-quickbooks-fishbowl-inventory-integration" target="_blank" rel="noopener">QuickBooks &amp; Fishbowl integration guide</a></p>
+      </div>
+    </details>
+
+    <!-- ============ INVENTORY & SCANNING ============ -->
+    <div class="group-label" data-group="Inventory">Inventory Counts &amp; Scanning</div>
+
+    <details class="card" data-cat="Inventory">
+      <summary>
+        <span class="q-tag">SOP</span>
+        <span class="q-text">How do I run an inventory / cycle count on Advanced Mobile?</span>
+        <svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg>
+      </summary>
+      <div class="answer">
+        <ol class="steps">
+          <li>Open Fishbowl <strong>Advanced Mobile</strong> and go to the inventory/cycle count function.</li>
+          <li>Scan the product barcode and confirm the item shown is correct.</li>
+          <li>Enter the counted quantity and submit the count.</li>
+          <li>Review variances in Fishbowl; investigate large discrepancies before finalizing.</li>
+        </ol>
+        <p class="src">Source: Remington Supply Fishbowl SOP &middot; <a href="https://drive.google.com/file/d/19dfz1Fw36HkHWrFc7FU5TnhZI20nxps2/view" target="_blank" rel="noopener">View SOP</a></p>
+      </div>
+    </details>
+
+    <details class="card" data-cat="Inventory">
+      <summary>
+        <span class="q-tag">SOP</span>
+        <span class="q-text">A UPC won't scan. How do I fix it?</span>
+        <svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg>
+      </summary>
+      <div class="answer">
+        <ol class="steps">
+          <li>Open Advanced Mobile and go to <kbd>Part</kbd>.</li>
+          <li>Search by part number, vendor name, or description, and open the correct item.</li>
+          <li>Select the <strong>edit pencil</strong> and go to the <kbd>UPC</kbd> field.</li>
+          <li>Scan or enter the UPC and save the part.</li>
+          <li>Test-scan again to confirm the barcode now pulls up the item.</li>
+        </ol>
+        <div class="note">
+          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 8v5"/><circle cx="12" cy="16.5" r=".5" fill="currentColor"/><path d="M12 3 2 21h20z"/></svg>
+          <div>Remember: the UPC belongs on the <b>-RG raw good</b> item, not the finished good.</div>
+        </div>
+        <p class="src">Source: Remington Supply Fishbowl SOP &middot; <a href="https://drive.google.com/file/d/19dfz1Fw36HkHWrFc7FU5TnhZI20nxps2/view" target="_blank" rel="noopener">View SOP</a></p>
+      </div>
+    </details>
+
+    <!-- ============ ROUTINE ============ -->
+    <div class="group-label" data-group="Routine">Daily / Weekly / Monthly Routine</div>
+
+    <details class="card" data-cat="Routine">
+      <summary>
+        <span class="q-tag">SOP</span>
+        <span class="q-text">What's the operating rhythm &mdash; what do I do daily, weekly, and monthly?</span>
+        <svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg>
+      </summary>
+      <div class="answer">
+        <p class="step-head">Daily</p>
+        <ul class="reasons">
+          <li>Receive new inventory against POs.</li>
+          <li>Reconcile vendor receipts when bills are available.</li>
+          <li>Process Clear Conscience Sales Orders.</li>
+          <li>Pick and ship customer orders.</li>
+          <li>Fix missing UPCs as they're found.</li>
+        </ul>
+        <p class="step-head">Weekly</p>
+        <ul class="reasons">
+          <li>Review Amazon and Amazon-inbound inventory.</li>
+          <li>Create Manufacture Orders for replenishment.</li>
+          <li>Create Transfer Orders from Manufacture Orders.</li>
+          <li>Pick and ship transfers to Amazon.</li>
+          <li>Review Amazon receiving and receive against Transfer Orders.</li>
+        </ul>
+        <p class="step-head">Monthly</p>
+        <ul class="reasons">
+          <li>Audit inventory discrepancies.</li>
+          <li>Review unreconciled receipts and open Transfer Orders.</li>
+          <li>Review Amazon inbound quantities.</li>
+          <li>Confirm QuickBooks export accuracy and review item/account mappings.</li>
+        </ul>
+        <p class="src">Source: Remington Supply Fishbowl SOP &middot; <a href="https://drive.google.com/file/d/19dfz1Fw36HkHWrFc7FU5TnhZI20nxps2/view" target="_blank" rel="noopener">View SOP</a></p>
+      </div>
+    </details>
+
+    <!-- ============ DOCUMENTATION LIBRARY ============ -->
+    <div class="lib-label" id="lib-label">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M4 4h7v16H4zM13 4h7v16h-7z" opacity=".9"/></svg>
+      Official Fishbowl Documentation Library
+    </div>
+    <p class="lib-intro">Every module in the official Fishbowl Advanced manual, organized by group. Each card opens the official article in a new tab &mdash; use the search box above to find one fast.</p>
+
+    <div class="lib-subhead">Getting Started &amp; Setup</div>
+    <div class="doc-grid">
+      <a class="doc-link" href="https://help.fishbowlinventory.com/advanced/s/article/Documentation" target="_blank" rel="noopener"><span class="dl-title">Documentation Index<svg class="arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M7 17 17 7M9 7h8v8"/></svg></span><span class="dl-desc">Full A&ndash;Z list of every Fishbowl Advanced article.</span></a>
+      <a class="doc-link" href="https://help.fishbowlinventory.com/advanced/s/article/Getting-Started" target="_blank" rel="noopener"><span class="dl-title">Getting Started<svg class="arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M7 17 17 7M9 7h8v8"/></svg></span><span class="dl-desc">First-time orientation to the Fishbowl client.</span></a>
+      <a class="doc-link" href="https://help.fishbowlinventory.com/advanced/s/article/Implementation-Guide" target="_blank" rel="noopener"><span class="dl-title">Implementation Guide<svg class="arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M7 17 17 7M9 7h8v8"/></svg></span><span class="dl-desc">Planning and rolling out Fishbowl from scratch.</span></a>
+      <a class="doc-link" href="https://help.fishbowlinventory.com/advanced/s/article/FAQs" target="_blank" rel="noopener"><span class="dl-title">FAQs<svg class="arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M7 17 17 7M9 7h8v8"/></svg></span><span class="dl-desc">Common questions answered by Fishbowl.</span></a>
+      <a class="doc-link" href="https://help.fishbowlinventory.com/advanced/s/article/Settings" target="_blank" rel="noopener"><span class="dl-title">Settings<svg class="arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M7 17 17 7M9 7h8v8"/></svg></span><span class="dl-desc">Company-wide system settings and preferences.</span></a>
+      <a class="doc-link" href="https://help.fishbowlinventory.com/advanced/s/Module-Options" target="_blank" rel="noopener"><span class="dl-title">Module Options<svg class="arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M7 17 17 7M9 7h8v8"/></svg></span><span class="dl-desc">Per-module configuration (Tools &rarr; Module Options).</span></a>
+      <a class="doc-link" href="https://help.fishbowlinventory.com/advanced/s/article/Custom-Field" target="_blank" rel="noopener"><span class="dl-title">Custom Field<svg class="arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M7 17 17 7M9 7h8v8"/></svg></span><span class="dl-desc">Add custom data fields across modules.</span></a>
+      <a class="doc-link" href="https://help.fishbowlinventory.com/advanced/s/article/User" target="_blank" rel="noopener"><span class="dl-title">User<svg class="arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M7 17 17 7M9 7h8v8"/></svg></span><span class="dl-desc">Manage user accounts and logins.</span></a>
+      <a class="doc-link" href="https://help.fishbowlinventory.com/advanced/s/article/User-Group" target="_blank" rel="noopener"><span class="dl-title">User Group<svg class="arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M7 17 17 7M9 7h8v8"/></svg></span><span class="dl-desc">Control which modules each user can access.</span></a>
+      <a class="doc-link" href="https://help.fishbowlinventory.com/advanced/s/Access-Rights" target="_blank" rel="noopener"><span class="dl-title">Access Rights<svg class="arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M7 17 17 7M9 7h8v8"/></svg></span><span class="dl-desc">Assign permissions to user groups.</span></a>
+      <a class="doc-link" href="https://help.fishbowlinventory.com/advanced/s/article/Location" target="_blank" rel="noopener"><span class="dl-title">Location<svg class="arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M7 17 17 7M9 7h8v8"/></svg></span><span class="dl-desc">Define storage locations within a warehouse.</span></a>
+      <a class="doc-link" href="https://help.fishbowlinventory.com/advanced/s/article/Location-Group" target="_blank" rel="noopener"><span class="dl-title">Location Group<svg class="arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M7 17 17 7M9 7h8v8"/></svg></span><span class="dl-desc">Group locations into warehouses/sites.</span></a>
+    </div>
+
+    <div class="lib-subhead">Sales &amp; Shipping</div>
+    <div class="doc-grid">
+      <a class="doc-link" href="https://help.fishbowlinventory.com/advanced/s/article/Sales-Order" target="_blank" rel="noopener"><span class="dl-title">Sales Order<svg class="arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M7 17 17 7M9 7h8v8"/></svg></span><span class="dl-desc">Create orders, credit returns, and drop-ships.</span></a>
+      <a class="doc-link" href="https://help.fishbowlinventory.com/advanced/s/article/Discount" target="_blank" rel="noopener"><span class="dl-title">Discount<svg class="arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M7 17 17 7M9 7h8v8"/></svg></span><span class="dl-desc">Percent or dollar discounts on orders/lines.</span></a>
+      <a class="doc-link" href="https://help.fishbowlinventory.com/advanced/s/article/Pricing-Rule" target="_blank" rel="noopener"><span class="dl-title">Pricing Rule<svg class="arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M7 17 17 7M9 7h8v8"/></svg></span><span class="dl-desc">Automatic customer/product pricing rules.</span></a>
+      <a class="doc-link" href="https://help.fishbowlinventory.com/advanced/s/article/RMA" target="_blank" rel="noopener"><span class="dl-title">RMA<svg class="arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M7 17 17 7M9 7h8v8"/></svg></span><span class="dl-desc">Return Merchandise Authorizations &amp; credits.</span></a>
+      <a class="doc-link" href="https://help.fishbowlinventory.com/s/article/Picking" target="_blank" rel="noopener"><span class="dl-title">Picking<svg class="arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M7 17 17 7M9 7h8v8"/></svg></span><span class="dl-desc">Pick items to fulfill sales/work/transfer orders.</span></a>
+      <a class="doc-link" href="https://help.fishbowlinventory.com/advanced/s/article/Shipping" target="_blank" rel="noopener"><span class="dl-title">Shipping<svg class="arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M7 17 17 7M9 7h8v8"/></svg></span><span class="dl-desc">Pack and ship items that have been picked.</span></a>
+      <a class="doc-link" href="https://help.fishbowlinventory.com/advanced/s/article/Fishbowl-ShipExpress" target="_blank" rel="noopener"><span class="dl-title">Fishbowl ShipExpress<svg class="arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M7 17 17 7M9 7h8v8"/></svg></span><span class="dl-desc">Buy carrier labels (Shippo / ShipStation).</span></a>
+      <a class="doc-link" href="https://help.fishbowlinventory.com/advanced/s/article/Sales-Dashboard" target="_blank" rel="noopener"><span class="dl-title">Sales Dashboard<svg class="arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M7 17 17 7M9 7h8v8"/></svg></span><span class="dl-desc">At-a-glance sales performance overview.</span></a>
+    </div>
+
+    <div class="lib-subhead">Purchasing &amp; Receiving</div>
+    <div class="doc-grid">
+      <a class="doc-link" href="https://help.fishbowlinventory.com/advanced/s/article/Purchase-Order" target="_blank" rel="noopener"><span class="dl-title">Purchase Order<svg class="arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M7 17 17 7M9 7h8v8"/></svg></span><span class="dl-desc">Buy inventory items from vendors.</span></a>
+      <a class="doc-link" href="https://help.fishbowlinventory.com/advanced/s/article/Receiving" target="_blank" rel="noopener"><span class="dl-title">Receiving<svg class="arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M7 17 17 7M9 7h8v8"/></svg></span><span class="dl-desc">Receive and reconcile against vendor bills.</span></a>
+    </div>
+
+    <div class="lib-subhead">Inventory &amp; Materials</div>
+    <div class="doc-grid">
+      <a class="doc-link" href="https://help.fishbowlinventory.com/advanced/s/article/Part" target="_blank" rel="noopener"><span class="dl-title">Part<svg class="arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M7 17 17 7M9 7h8v8"/></svg></span><span class="dl-desc">The item/part record (incl. -RG raw goods).</span></a>
+      <a class="doc-link" href="https://help.fishbowlinventory.com/advanced/s/article/Product" target="_blank" rel="noopener"><span class="dl-title">Product<svg class="arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M7 17 17 7M9 7h8v8"/></svg></span><span class="dl-desc">The sellable product tied to a part.</span></a>
+      <a class="doc-link" href="https://help.fishbowlinventory.com/advanced/s/article/Inventory" target="_blank" rel="noopener"><span class="dl-title">Inventory<svg class="arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M7 17 17 7M9 7h8v8"/></svg></span><span class="dl-desc">Quantities, locations, adjustments, cycle counts.</span></a>
+      <a class="doc-link" href="https://help.fishbowlinventory.com/advanced/s/article/Transfer-Order" target="_blank" rel="noopener"><span class="dl-title">Transfer Order<svg class="arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M7 17 17 7M9 7h8v8"/></svg></span><span class="dl-desc">Move inventory between locations (e.g. to Amazon).</span></a>
+      <a class="doc-link" href="https://help.fishbowlinventory.com/advanced/s/article/Variants" target="_blank" rel="noopener"><span class="dl-title">Variants<svg class="arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M7 17 17 7M9 7h8v8"/></svg></span><span class="dl-desc">Item variants like size/color (plugin).</span></a>
+    </div>
+
+    <div class="lib-subhead">Manufacturing</div>
+    <div class="doc-grid">
+      <a class="doc-link" href="https://help.fishbowlinventory.com/advanced/s/article/Bill-of-Materials" target="_blank" rel="noopener"><span class="dl-title">Bill of Materials<svg class="arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M7 17 17 7M9 7h8v8"/></svg></span><span class="dl-desc">The recipe that builds a finished good.</span></a>
+      <a class="doc-link" href="https://help.fishbowlinventory.com/advanced/s/article/Manufacture-Order" target="_blank" rel="noopener"><span class="dl-title">Manufacture Order<svg class="arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M7 17 17 7M9 7h8v8"/></svg></span><span class="dl-desc">Organize and issue work orders.</span></a>
+      <a class="doc-link" href="https://help.fishbowlinventory.com/advanced/s/article/Work-Order" target="_blank" rel="noopener"><span class="dl-title">Work Order<svg class="arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M7 17 17 7M9 7h8v8"/></svg></span><span class="dl-desc">Execute a build, disassemble, or repair.</span></a>
+    </div>
+
+    <div class="lib-subhead">Accounting</div>
+    <div class="doc-grid">
+      <a class="doc-link" href="https://help.fishbowlinventory.com/advanced/s/article/Accounting-Integration" target="_blank" rel="noopener"><span class="dl-title">Accounting Integration<svg class="arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M7 17 17 7M9 7h8v8"/></svg></span><span class="dl-desc">Export Fishbowl activity to your accounting system.</span></a>
+      <a class="doc-link" href="https://help.fishbowlinventory.com/advanced/s/article/QuickBooks" target="_blank" rel="noopener"><span class="dl-title">QuickBooks (Desktop)<svg class="arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M7 17 17 7M9 7h8v8"/></svg></span><span class="dl-desc">QB Desktop integration, mapping, and export.</span></a>
+      <a class="doc-link" href="https://help.fishbowlinventory.com/advanced/s/article/QuickBooks-Online" target="_blank" rel="noopener"><span class="dl-title">QuickBooks Online<svg class="arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M7 17 17 7M9 7h8v8"/></svg></span><span class="dl-desc">QBO integration setup and export.</span></a>
+      <a class="doc-link" href="https://help.fishbowlinventory.com/advanced/s/article/Xero" target="_blank" rel="noopener"><span class="dl-title">Xero<svg class="arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M7 17 17 7M9 7h8v8"/></svg></span><span class="dl-desc">Xero accounting integration.</span></a>
+    </div>
+
+    <div class="lib-subhead">Reports &amp; Data</div>
+    <div class="doc-grid">
+      <a class="doc-link" href="https://help.fishbowlinventory.com/advanced/s/article/Reports" target="_blank" rel="noopener"><span class="dl-title">Reports<svg class="arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M7 17 17 7M9 7h8v8"/></svg></span><span class="dl-desc">Built-in reports, filters, and custom reports.</span></a>
+      <a class="doc-link" href="https://help.fishbowlinventory.com/advanced/s/Advanced-Reports" target="_blank" rel="noopener"><span class="dl-title">Advanced Reports<svg class="arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M7 17 17 7M9 7h8v8"/></svg></span><span class="dl-desc">The Advanced Reports add-on.</span></a>
+      <a class="doc-link" href="https://help.fishbowlinventory.com/advanced/s/article/Data" target="_blank" rel="noopener"><span class="dl-title">Data<svg class="arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M7 17 17 7M9 7h8v8"/></svg></span><span class="dl-desc">Data queries &mdash; incl. the MO&rarr;TO query you use.</span></a>
+      <a class="doc-link" href="https://help.fishbowlinventory.com/advanced/s/article/Imports-and-Exports" target="_blank" rel="noopener"><span class="dl-title">Imports &amp; Exports<svg class="arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M7 17 17 7M9 7h8v8"/></svg></span><span class="dl-desc">Bulk import/export via spreadsheets.</span></a>
+    </div>
+
+    <div class="lib-subhead">Developers &amp; Updates</div>
+    <div class="doc-grid">
+      <a class="doc-link" href="https://help.fishbowlinventory.com/advanced/s/article/API" target="_blank" rel="noopener"><span class="dl-title">API<svg class="arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M7 17 17 7M9 7h8v8"/></svg></span><span class="dl-desc">Overview of the Fishbowl API.</span></a>
+      <a class="doc-link" href="https://help.fishbowlinventory.com/advanced/s/apidocs/introduction.html" target="_blank" rel="noopener"><span class="dl-title">REST API Docs<svg class="arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M7 17 17 7M9 7h8v8"/></svg></span><span class="dl-desc">Endpoint reference for the REST API.</span></a>
+      <a class="doc-link" href="https://help.fishbowlinventory.com/advanced/s/article/Release-Notes" target="_blank" rel="noopener"><span class="dl-title">Release Notes<svg class="arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M7 17 17 7M9 7h8v8"/></svg></span><span class="dl-desc">What's new and fixed in each Fishbowl version.</span></a>
+    </div>
+
+  </div>
+
+  <div class="empty" id="empty">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+    <p>No answers match that search.<br>Try a simpler word like &ldquo;reconcile&rdquo;, &ldquo;BOM&rdquo;, &ldquo;transfer&rdquo;, or &ldquo;invoice&rdquo;.</p>
+  </div>
+
+  <footer>
+    Built for the Remington Supply bookkeeping team. General answers are summarized from Fishbowl's official Advanced documentation; procedures marked <b>SOP</b> come from the <a href="https://drive.google.com/file/d/19dfz1Fw36HkHWrFc7FU5TnhZI20nxps2/view" target="_blank" rel="noopener">Remington Supply Fishbowl SOP</a>; and the <b>Docs Library</b> links straight to the official Fishbowl manual. Exact button names can vary slightly by Fishbowl version &mdash; when in doubt, open the <a href="https://help.fishbowlinventory.com/advanced/s/article/Documentation" target="_blank" rel="noopener">full Fishbowl documentation index</a> or ask Adam.
+  </footer>
+</div>
+
+<script>
+(function(){
+  var search=document.getElementById('search');
+  var chips=Array.prototype.slice.call(document.querySelectorAll('.chip'));
+  var cards=Array.prototype.slice.call(document.querySelectorAll('.card'));
+  var labels=Array.prototype.slice.call(document.querySelectorAll('.group-label'));
+  var docLinks=Array.prototype.slice.call(document.querySelectorAll('.doc-link'));
+  var subheads=Array.prototype.slice.call(document.querySelectorAll('.lib-subhead'));
+  var libLabel=document.getElementById('lib-label');
+  var libIntro=document.querySelector('.lib-intro');
+  var count=document.getElementById('count');
+  var empty=document.getElementById('empty');
+  var activeCat='all';
+
+  function norm(s){return (s||'').toLowerCase();}
+
+  function apply(){
+    var q=norm(search.value).trim();
+    var terms=q.split(/\s+/).filter(Boolean);
+    var visible=0;
+
+    cards.forEach(function(card){
+      var cat=card.getAttribute('data-cat');
+      var text=norm(card.textContent);
+      var matchCat=(activeCat==='all'||cat===activeCat);
+      var matchText=terms.every(function(t){return text.indexOf(t)>-1;});
+      var show=matchCat&&matchText;
+      card.classList.toggle('hidden',!show);
+      if(show){
+        visible++;
+        if(terms.length){card.open=true;}
+      }
+    });
+
+    labels.forEach(function(label){
+      var n=label.nextElementSibling, anyVisible=false;
+      while(n && !n.classList.contains('group-label')){
+        if(n.classList.contains('card') && !n.classList.contains('hidden')){anyVisible=true;break;}
+        n=n.nextElementSibling;
+      }
+      label.classList.toggle('hidden',!anyVisible);
+    });
+
+    // Documentation Library
+    var libCat=(activeCat==='all'||activeCat==='Docs');
+    var libVisible=0;
+    docLinks.forEach(function(link){
+      var text=norm(link.textContent);
+      var matchText=terms.every(function(t){return text.indexOf(t)>-1;});
+      var show=libCat&&matchText;
+      link.classList.toggle('hidden',!show);
+      if(show)libVisible++;
+    });
+    subheads.forEach(function(h){
+      var grid=h.nextElementSibling, any=false;
+      if(grid){
+        var kids=grid.querySelectorAll('.doc-link');
+        for(var i=0;i<kids.length;i++){if(!kids[i].classList.contains('hidden')){any=true;break;}}
+      }
+      h.classList.toggle('hidden',!any);
+    });
+    libLabel.classList.toggle('hidden',libVisible===0);
+    if(libIntro)libIntro.classList.toggle('hidden',libVisible===0);
+    visible+=libVisible;
+
+    empty.style.display=visible?'none':'block';
+    if(terms.length||activeCat!=='all'){
+      count.textContent=visible+(visible===1?' result':' results')+' shown';
+    }else{
+      count.textContent=cards.length+' answers + '+docLinks.length+' official docs · type to search or pick a topic';
+    }
+  }
+
+  search.addEventListener('input',apply);
+  chips.forEach(function(c){
+    c.addEventListener('click',function(){
+      activeCat=c.getAttribute('data-cat');
+      chips.forEach(function(x){x.setAttribute('aria-pressed', x===c?'true':'false');});
+      apply();
+    });
+  });
+
+  apply();
+})();
+</script>
+</body>
+</html>
