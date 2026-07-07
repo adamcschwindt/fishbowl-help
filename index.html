@@ -1036,6 +1036,19 @@
     });
   });
 
+  // Deep links: "#q=clear conscience" pre-fills the search; "#cat=Orders" opens a topic.
+  function readHash(){
+    var raw=(location.hash||'').replace(/^#/,'');
+    if(!raw)return;
+    raw.split('&').forEach(function(part){
+      var i=part.indexOf('='); if(i<0)return;
+      var k=part.slice(0,i), v=decodeURIComponent(part.slice(i+1).replace(/\+/g,' '));
+      if(k==='q'){search.value=v;}
+      else if(k==='cat'){chips.forEach(function(c){if(c.getAttribute('data-cat')===v){activeCat=v;chips.forEach(function(x){x.setAttribute('aria-pressed',x===c?'true':'false');});}});}
+    });
+  }
+  readHash();
+  window.addEventListener('hashchange',function(){readHash();apply();});
   apply();
 })();
 </script>
