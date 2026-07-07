@@ -80,6 +80,10 @@
   .answer>*:first-child{margin-top:18px}
   .answer p{margin:0 0 12px;color:#274349}
   .step-head{font-size:13.5px;font-weight:700;color:var(--accent-deep);letter-spacing:.02em;margin:18px 0 9px;text-transform:uppercase}
+  .badge{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:2px 7px;border-radius:5px;margin-left:8px;vertical-align:middle;white-space:nowrap}
+  .badge.auto{color:var(--good);background:var(--good-soft)}
+  .badge.manual{color:var(--warn);background:var(--warn-soft)}
+  .where{display:block;margin-top:4px;font-size:13px;color:var(--faint)}
 
   .quick{background:var(--good-soft);border-radius:10px;padding:13px 16px;margin:0 0 18px;font-size:15.5px;display:flex;gap:11px;align-items:flex-start}
   .quick b{color:var(--good)}
@@ -514,37 +518,107 @@
     <!-- ============ CUSTOMER ORDERS & SHIPPING ============ -->
     <div class="group-label" data-group="Orders">Customer Orders &amp; Shipping</div>
 
-    <details class="card" data-cat="Orders">
+    <details class="card" data-cat="Orders" open>
       <summary>
         <span class="q-tag">SOP</span>
-        <span class="q-text">How do I process a Clear Conscience order from email to payment?</span>
+        <span class="q-text">Clear Conscience orders: what do I actually have to do by hand?</span>
         <svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg>
       </summary>
       <div class="answer">
-        <p class="step-head">Order entry</p>
+        <div class="quick">
+          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+          <div><b>Most of this runs on its own.</b> Only <strong>four</strong> steps need a person &mdash; everything else on the Orders tab fills itself in. These are the four.</div>
+        </div>
         <ol class="steps">
-          <li>Clear Conscience sends the order by email.</li>
-          <li>In Fishbowl, create a new <kbd>Sales Order</kbd>; enter customer, items, quantity, pricing, and ship details.</li>
-          <li>Save, then send the order confirmation email <strong>directly from Fishbowl</strong>.</li>
+          <li><strong>Review new orders</strong><span class="badge manual">Manual</span> &mdash; open the linked email, check it against the order line, and mark it verified.<span class="where">Orders tab &rarr; click &ldquo;Open email,&rdquo; then type <kbd>y</kbd> in the Verify(y) column.</span></li>
+          <li><strong>Pick, pack, and ship</strong><span class="badge manual">Manual</span> &mdash; in Fishbowl, exactly as you always have. Nothing about the physical process changes.<span class="where">Fishbowl &rarr; mark the shipment Shipped.</span></li>
+          <li><strong>Log the FedEx pickup</strong><span class="badge manual">Manual</span> &mdash; once the truck actually leaves with the boxes. This is the one date nothing captures automatically.<span class="where">Orders tab &rarr; &ldquo;Last Pickup&rdquo; box, top right &rarr; enter today's date.</span></li>
+          <li><strong>Handle exceptions by hand</strong><span class="badge manual">Manual</span> &mdash; damaged-case replacements and order changes don't run through the automated flow. See the exceptions card below.</li>
         </ol>
-        <p class="step-head">Batch &amp; pick</p>
+        <p class="src">Source: Remington Supply &mdash; Clear Conscience Fulfillment SOP (effective 2026-07-07) &middot; <a href="https://docs.google.com/spreadsheets/d/18x0lVJmJOQLBU0LBdY0nOLUtkLZ9HWKkOp7Kgnswv1w/edit" target="_blank" rel="noopener">Orders &amp; Inventory tracker</a></p>
+      </div>
+    </details>
+
+    <details class="card" data-cat="Orders">
+      <summary>
+        <span class="q-tag">SOP</span>
+        <span class="q-text">Clear Conscience daily workflow, start to finish (what's automatic vs. manual)?</span>
+        <svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg>
+      </summary>
+      <div class="answer">
+        <p>In the order it actually happens:</p>
         <ol class="steps">
-          <li>Group Clear Conscience SOs into batches when appropriate; confirm all are issued and ready to pick.</li>
-          <li>Pick the orders, confirm picked quantities, and finish the picks.</li>
+          <li><strong>PO email arrives</strong><span class="badge auto">Automatic</span> &mdash; Clear Conscience's order lands in the shared inbox. The system checks every couple of minutes; no one needs to watch for it.</li>
+          <li><strong>Order logged &amp; confirmed</strong><span class="badge auto">Automatic</span> &mdash; the order is read, matched to the right product (12oz or 3oz case), added as a new Orders-tab row, and an itemized confirmation email goes to Clear Conscience.<span class="where">SKUs that don't match are flagged instead of confirmed &mdash; see exceptions.</span></li>
+          <li><strong>Review the order</strong><span class="badge manual">Manual</span> &mdash; click <kbd>Open email</kbd> on that row to see the original PO, and confirm the parsed line matches it.</li>
+          <li><strong>Mark it verified</strong><span class="badge manual">Manual</span> &mdash; type <kbd>y</kbd> in the <strong>Verify(y)</strong> column. That's the signal it's cleared to enter Fishbowl.</li>
+          <li><strong>Order flows into Fishbowl</strong><span class="badge auto">Automatic</span> &mdash; within about a minute it's created as a real sales order numbered <kbd>CC-&lt;PO number&gt;</kbd>. Status moves <kbd>New</kbd> &rarr; <kbd>Queued</kbd>.</li>
+          <li><strong>Pick, pack, ship</strong><span class="badge manual">Manual</span> &mdash; handle it like any other Fishbowl sales order. Quirk: Fishbowl shows the carrier as <kbd>Will Call</kbd> &mdash; that's just how FedEx is set up here, not an instruction. These still ship <strong>FedEx Ground</strong>.</li>
+          <li><strong>Tracking flows back</strong><span class="badge auto">Automatic</span> &mdash; once you mark it Shipped, the FedEx tracking number(s) and ship date populate the row (usually within minutes). Status moves to <kbd>Imported</kbd> and the row sorts to the bottom.</li>
+          <li><strong>FedEx picks up</strong><span class="badge manual">Manual</span> &mdash; the truck comes weekly, usually Wednesday. A tracking number does <strong>not</strong> mean it's been picked up &mdash; Fishbowl only knows it's labeled. When the truck takes the boxes, enter today's date in the &ldquo;Last Pickup&rdquo; box; this resets the running case count for the next pickup.</li>
         </ol>
-        <p class="step-head">Shipping</p>
+        <p class="src">Source: Remington Supply &mdash; Clear Conscience Fulfillment SOP (effective 2026-07-07) &middot; <a href="https://docs.google.com/spreadsheets/d/18x0lVJmJOQLBU0LBdY0nOLUtkLZ9HWKkOp7Kgnswv1w/edit" target="_blank" rel="noopener">Orders &amp; Inventory tracker</a></p>
+      </div>
+    </details>
+
+    <details class="card" data-cat="Orders">
+      <summary>
+        <span class="q-tag">SOP</span>
+        <span class="q-text">Clear Conscience Orders tab &mdash; what does each column mean?</span>
+        <svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg>
+      </summary>
+      <div class="answer">
+        <p>Columns can be reordered freely for your own view &mdash; nothing depends on where a column sits, only on its name.</p>
+        <ul class="reasons">
+          <li><b>Verify(y)</b> &mdash; type <kbd>y</kbd> once you've reviewed the order. Nothing downstream happens until this is set.</li>
+          <li><b>Status</b> &mdash; <kbd>New</kbd> (not yet verified), <kbd>Queued</kbd> (verified, waiting to appear in Fishbowl), <kbd>Imported</kbd> (confirmed in Fishbowl; sorts to the bottom).</li>
+          <li><b>OrderEmail</b> &mdash; &ldquo;Open email&rdquo; links back to the original PO for review.</li>
+          <li><b>PO</b> &mdash; the customer's purchase order number, taken verbatim from their email.</li>
+          <li><b>12oz Cases / 3oz Cases</b> &mdash; plain case counts per SKU; sum them for a case total across any rows.</li>
+          <li><b>Tracking</b> &mdash; FedEx tracking number(s), filled in automatically once the order ships.</li>
+          <li><b>Shipped Date</b> &mdash; the date Fishbowl marked it Shipped &mdash; <em>not</em> the date FedEx picked it up.</li>
+          <li><b>Awaiting FedEx pickup</b> (top right) &mdash; running case total shipped since the last pickup date you logged; resets to zero each time you update &ldquo;Last Pickup.&rdquo;</li>
+        </ul>
+        <p class="src">Source: Remington Supply &mdash; Clear Conscience Fulfillment SOP (effective 2026-07-07) &middot; <a href="https://docs.google.com/spreadsheets/d/18x0lVJmJOQLBU0LBdY0nOLUtkLZ9HWKkOp7Kgnswv1w/edit" target="_blank" rel="noopener">Orders &amp; Inventory tracker</a></p>
+      </div>
+    </details>
+
+    <details class="card" data-cat="Orders">
+      <summary>
+        <span class="q-tag">SOP</span>
+        <span class="q-text">What fees are charged on Clear Conscience orders?</span>
+        <svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg>
+      </summary>
+      <div class="answer">
+        <p>Both are <strong>automatic and itemized</strong> on the customer's confirmation email &mdash; there's no manual billing step.</p>
+        <ul class="reasons">
+          <li><b>Processing fee &mdash; $4.50 / case.</b> Applied to every case on every order.</li>
+          <li><b>FedEx pickup fee &mdash; $23.20 / week.</b> Applied once, to the <strong>first</strong> Clear Conscience order of each week (Sunday&ndash;Saturday).</li>
+        </ul>
+        <p class="src">Source: Remington Supply &mdash; Clear Conscience Fulfillment SOP (effective 2026-07-07) &middot; <a href="https://docs.google.com/spreadsheets/d/18x0lVJmJOQLBU0LBdY0nOLUtkLZ9HWKkOp7Kgnswv1w/edit" target="_blank" rel="noopener">Orders &amp; Inventory tracker</a></p>
+      </div>
+    </details>
+
+    <details class="card" data-cat="Orders">
+      <summary>
+        <span class="q-tag">SOP</span>
+        <span class="q-text">Clear Conscience exceptions: order changes, damaged cases, unknown products?</span>
+        <svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg>
+      </summary>
+      <div class="answer">
+        <p>Anything outside a clean PO &rarr; clean shipment gets handled by hand, on purpose.</p>
+        <p class="step-head">Order change or cancellation</p>
+        <p>A reply to an existing PO thread doesn't match the automated format, so it's never silently processed &mdash; it's flagged and an alert goes to the office automatically. No warehouse action needed; just don't assume a reply email was acted on until someone confirms it.</p>
+        <p class="step-head">Damaged case / replacement</p>
+        <p>Don't touch the original order &mdash; it's an accurate record of what actually shipped. Instead:</p>
         <ol class="steps">
-          <li>Process the shipment in Fishbowl and buy the label through <strong>Shippo</strong>.</li>
-          <li>Use the <strong>customer FedEx account</strong> when buying the label.</li>
-          <li>Complete the shipment; confirm Fishbowl sends tracking/confirmation to the customer.</li>
+          <li>Create a small, separate sales order in Fishbowl for just the replacement case(s), priced at <strong>$0 with no processing fee</strong> &mdash; it's a make-good, not a sale.</li>
+          <li>If you want it visible on the shared sheet, add one Orders-tab row using that same order number in the PO column &mdash; tracking populates on its own once you ship it.</li>
+          <li>Send a short, personal reply to the customer rather than the automated confirmation template &mdash; it isn't worded for a replacement.</li>
         </ol>
-        <p class="step-head">Invoicing &amp; payment</p>
-        <ol class="steps">
-          <li>Fulfilled SOs export from Fishbowl to QuickBooks as <strong>invoices</strong> (batched fulfillment may reflect only fulfilled items).</li>
-          <li>Review the invoice in QuickBooks and send the customer invoice report from QuickBooks.</li>
-          <li>Receive payment from the customer.</li>
-        </ol>
-        <p class="src">Source: Remington Supply Fishbowl SOP &middot; <a href="https://drive.google.com/file/d/19dfz1Fw36HkHWrFc7FU5TnhZI20nxps2/view" target="_blank" rel="noopener">View SOP</a></p>
+        <p class="step-head">Line item doesn't match a known product</p>
+        <p>The order is logged but <strong>not</strong> auto-confirmed to the customer &mdash; it's flagged for review. Resolve the mismatch, then verify it manually once it's correct.</p>
+        <p class="src">Source: Remington Supply &mdash; Clear Conscience Fulfillment SOP (effective 2026-07-07) &middot; <a href="https://docs.google.com/spreadsheets/d/18x0lVJmJOQLBU0LBdY0nOLUtkLZ9HWKkOp7Kgnswv1w/edit" target="_blank" rel="noopener">Orders &amp; Inventory tracker</a></p>
       </div>
     </details>
 
