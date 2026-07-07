@@ -413,6 +413,90 @@
     <details class="card" data-cat="Manufacturing">
       <summary>
         <span class="q-tag">SOP</span>
+        <span class="q-text">Weekly production &rarr; Amazon FBA: what's the current workflow and who does what?</span>
+        <svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg>
+      </summary>
+      <div class="answer">
+        <div class="quick">
+          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+          <div><b>The recurring weekly flow:</b> Becca creates the MOs; the warehouse builds them and accumulates finished goods onto <strong>one weekly Transfer Order</strong>; at week's end the warehouse processes &amp; reconciles the TO to Amazon FBA Inbound; a script then moves it into sellable Amazon FBA once Amazon confirms receipt.</div>
+        </div>
+        <p class="step-head">The flow at a glance</p>
+        <p>MO per SKU (Becca) &rarr; warehouse completes each MO &rarr; finished items added to the week's TO &rarr; warehouse processes the TO (Remington warehouse &rarr; FBA Inbound) &rarr; warehouse reconciles (+ processing fee + freight, + FBA shipment ID in the note) &rarr; script moves FBA Inbound &rarr; Amazon FBA on receipt.</p>
+        <p class="step-head">Who does what</p>
+        <ul class="reasons">
+          <li><b>Create MOs (one per SKU, with due date)</b> &mdash; Becca <span style="color:var(--faint)">(Adam accountable)</span>.</li>
+          <li><b>Produce finished goods / complete MOs</b> &mdash; Warehouse team.</li>
+          <li><b>Add finished items to the weekly TO</b> &mdash; Warehouse team.</li>
+          <li><b>Process &amp; reconcile the weekly TO, enter the FBA shipment ID</b> &mdash; Warehouse team <span style="color:var(--faint)">(Vicky consulted on fees/freight)</span>.</li>
+          <li><b>FBA Inbound &rarr; Amazon FBA on receipt</b> &mdash; automated script, no manual step.</li>
+          <li><b>Backorder report auto-export &amp; review</b> &mdash; Adam sets up; reviewer TBD.</li>
+        </ul>
+        <p class="src">Source: Remington Supply &mdash; Manufacturing Order &amp; Transfer Order SOP (current state, effective 2026-07-07)</p>
+      </div>
+    </details>
+
+    <details class="card" data-cat="Manufacturing">
+      <summary>
+        <span class="q-tag">SOP</span>
+        <span class="q-text">MO &rarr; TO &rarr; FBA, step by step (the 8 steps)</span>
+        <svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg>
+      </summary>
+      <div class="answer">
+        <ol class="steps">
+          <li><strong>Create Manufacturing Orders</strong><span class="badge manual">Becca</span> &mdash; one MO per SKU, each with a due date, per the week's production schedule.</li>
+          <li><strong>Warehouse processes each MO</strong><span class="badge manual">Warehouse</span> &mdash; produce the finished goods against each MO by its due date.</li>
+          <li><strong>Add finished items to the Transfer Order</strong><span class="badge manual">Warehouse</span> &mdash; immediately as each MO completes (continuously through the week, not just at the end). Add them onto that week's running TO.</li>
+          <li><strong>Process the weekly TO to Amazon FBA</strong><span class="badge manual">Warehouse</span> &mdash; once the week's done, process the accumulated TO; it ships from the Remington warehouse to the <strong>Amazon FBA Inbound</strong> location.</li>
+          <li><strong>Reconcile the TO</strong><span class="badge manual">Warehouse</span> &mdash; as soon as it's processed (don't wait for Amazon receipt), add the inbound <strong>processing fee</strong> and <strong>freight</strong> so you capture true landed cost at the point of send.</li>
+          <li><strong>Enter the Amazon FBA shipment ID</strong><span class="badge manual">Warehouse</span> &mdash; in the same sitting, put the FBA shipment ID into the TO's <strong>note field</strong>, tying the Fishbowl TO to the Amazon shipment.</li>
+          <li><strong>Automated move: FBA Inbound &rarr; Amazon FBA</strong><span class="badge auto">Automatic</span> &mdash; the script detects when Amazon receives the shipment and moves the inventory into Amazon FBA (sellable). No manual action under normal operation.</li>
+          <li><strong>Backorder report monitoring</strong><span class="badge auto">Scheduled</span> &mdash; a recurring auto-export of the Backorder report runs so anything slipping through gets caught and routed. Cadence TBD (daily / every other day recommended).</li>
+        </ol>
+        <p class="src">Source: Remington Supply &mdash; Manufacturing Order &amp; Transfer Order SOP (current state, effective 2026-07-07)</p>
+      </div>
+    </details>
+
+    <details class="card" data-cat="Manufacturing">
+      <summary>
+        <span class="q-tag">SOP</span>
+        <span class="q-text">MO / TO exceptions and edge cases (what to do when it's not clean)?</span>
+        <svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg>
+      </summary>
+      <div class="answer">
+        <ul class="reasons">
+          <li><b>MO due date missed</b> &mdash; warehouse flags Becca; finished items still go onto the TO whenever the MO completes. If that week's TO already shipped, they roll into next week's.</li>
+          <li><b>Script didn't detect receipt / stuck in FBA Inbound</b> &mdash; check Amazon Seller Central to confirm actual receipt before assuming the script failed. If Amazon shows received but Fishbowl hasn't moved it, escalate to Adam.</li>
+          <li><b>Fees not known at reconciliation</b> &mdash; use your best estimate for processing fee/freight, then true up if the actual invoice differs materially.</li>
+          <li><b>BOM / &ldquo;Available to Build&rdquo; issue blocks an MO</b> &mdash; don't force it; that's a prerequisite issue. Escalate to Becca/Adam for a BOM fix before continuing that SKU.</li>
+          <li><b>FBA shipment ID not available yet</b> &mdash; reconcile the fee/freight as normal and add the shipment ID to the note as soon as it's issued; don't leave the note blank.</li>
+          <li><b>Backorder auto-export fails</b> &mdash; treat as a system issue, not just a missed report; flag Adam so the schedule/delivery is fixed (a silent failure defeats the purpose).</li>
+        </ul>
+        <p class="src">Source: Remington Supply &mdash; Manufacturing Order &amp; Transfer Order SOP (current state, effective 2026-07-07)</p>
+      </div>
+    </details>
+
+    <details class="card" data-cat="Manufacturing">
+      <summary>
+        <span class="q-tag">SOP</span>
+        <span class="q-text">How is the MO &rarr; TO process measured (targets)?</span>
+        <svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg>
+      </summary>
+      <div class="answer">
+        <ul class="reasons">
+          <li><b>MOs completed by due date</b> &mdash; target <strong>100%</strong> (MO due date vs. actual completion in Fishbowl).</li>
+          <li><b>TO processed &rarr; Amazon receipt confirmed</b> &mdash; tracked for trend / carrier performance (TO processed date vs. Amazon receipt date).</li>
+          <li><b>Reconciliation accuracy</b> &mdash; estimated vs. actual fees within an acceptable variance (TBD).</li>
+          <li><b>Backorder report reviewed on schedule</b> &mdash; 100% of scheduled exports reviewed.</li>
+          <li><b>TOs missing the shipment ID in the note</b> &mdash; target <strong>0</strong> (spot-check processed TOs).</li>
+        </ul>
+        <p class="src">Source: Remington Supply &mdash; Manufacturing Order &amp; Transfer Order SOP (current state, effective 2026-07-07)</p>
+      </div>
+    </details>
+
+    <details class="card" data-cat="Manufacturing">
+      <summary>
+        <span class="q-tag">SOP</span>
         <span class="q-text">How do I plan and create a Manufacture Order (MO)?</span>
         <svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg>
       </summary>
@@ -471,18 +555,20 @@
     <details class="card" data-cat="Manufacturing">
       <summary>
         <span class="q-tag">SOP</span>
-        <span class="q-text">How do I pick, ship, and receive a Transfer Order into Amazon?</span>
+        <span class="q-text">How do I pick and ship a Transfer Order to Amazon FBA Inbound? (the mechanics)</span>
         <svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg>
       </summary>
       <div class="answer">
         <ol class="steps">
           <li><strong>Pick:</strong> open the issued TO &rarr; <kbd>Picking</kbd> &rarr; start the pick, pick from the correct location, confirm quantities, finish.</li>
-          <li><strong>Ship:</strong> go to <kbd>Shipping</kbd>, find the shipment, pack, confirm details, ship, and record tracking.</li>
-          <li><strong>Receive into Amazon:</strong> monitor Amazon receiving reports. When Amazon confirms a quantity, open the TO &rarr; <kbd>Receive</kbd> and receive <strong>only what Amazon confirmed</strong>.</li>
-          <li>Leave remaining quantities open if still in transit; continue weekly until Amazon receives everything.</li>
-          <li>If Amazon rejects or loses inventory, document it &mdash; scrap unusable inventory or receive it back if returned.</li>
+          <li><strong>Ship:</strong> go to <kbd>Shipping</kbd>, find the shipment, pack, confirm details, ship to the <strong>Amazon FBA Inbound</strong> location, and record tracking.</li>
+          <li><strong>Reconcile &amp; tag:</strong> as soon as it's processed, add the inbound processing fee + freight and enter the <strong>Amazon FBA shipment ID</strong> in the TO note field.</li>
         </ol>
-        <p class="src">Source: Remington Supply Fishbowl SOP &middot; <a href="https://drive.google.com/file/d/19dfz1Fw36HkHWrFc7FU5TnhZI20nxps2/view" target="_blank" rel="noopener">View SOP</a></p>
+        <div class="note">
+          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 8v5"/><circle cx="12" cy="16.5" r=".5" fill="currentColor"/><path d="M12 3 2 21h20z"/></svg>
+          <div>You do <b>not</b> manually receive this into Amazon FBA anymore &mdash; an automated script moves it from FBA Inbound to Amazon FBA once Amazon confirms receipt. If it's stuck, check Seller Central and escalate to Adam. See the weekly-workflow card above for the full process.</div>
+        </div>
+        <p class="src">Source: Remington Supply &mdash; Manufacturing Order &amp; Transfer Order SOP (current state, effective 2026-07-07)</p>
       </div>
     </details>
 
