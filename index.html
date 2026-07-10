@@ -546,6 +546,100 @@
       </div>
     </details>
 
+    <details class="card" data-cat="Manufacturing">
+      <summary>
+        <span class="q-tag">SOP</span>
+        <span class="q-text">FBA Transfer Order: what has to be true before I start?</span>
+        <svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg>
+      </summary>
+      <div class="answer">
+        <p>Applies to <strong>every FBA shipment leaving Remington Warehouse</strong>. Amazon is the source of truth for anything that has left the building.</p>
+        <ul class="reasons">
+          <li><b>All finished goods must exist in Fishbowl first</b> &mdash; complete/receive the MO before picking. If a lot is missing, the MO wasn't finished &mdash; fix the MO; <strong>don't cycle-count product into existence</strong>.</li>
+          <li><b>Every part on the shipment needs a non-zero weight</b> on its Part record (check the TALL-jar SKUs &mdash; several were missing weights). Zero-weight parts get $0 of the freight allocation and skew everyone else's landed cost.</li>
+        </ul>
+        <p class="src">Source: Remington Supply &mdash; FBA Transfer Order SOP (Warehouse &rarr; Amazon)</p>
+      </div>
+    </details>
+
+    <details class="card" data-cat="Manufacturing">
+      <summary>
+        <span class="q-tag">SOP</span>
+        <span class="q-text">How do I create the FBA Transfer Order (destination + fast CSV method)?</span>
+        <svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg>
+      </summary>
+      <div class="answer">
+        <div class="note">
+          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 8v5"/><circle cx="12" cy="16.5" r=".5" fill="currentColor"/><path d="M12 3 2 21h20z"/></svg>
+          <div>Destination location group = <strong>&ldquo;Amazon FBA Inbound&rdquo;</strong>, <strong>NOT</strong> &ldquo;Amazon FBA.&rdquo; Inbound is the staging bucket; the automation moves stock to Amazon FBA when Amazon actually receives it.</div>
+        </div>
+        <p class="step-head">Fast way to build a big TO</p>
+        <ol class="steps">
+          <li>On the <kbd>Import/Export</kbd> screen, <strong>export an existing TO</strong> (&ldquo;Transfer Order&rdquo; type).</li>
+          <li>Edit the CSV: header row <kbd>TO</kbd> + one <kbd>Item</kbd> row per SKU, <strong>Status 10 = Entered</strong>.</li>
+          <li>Re-import.</li>
+        </ol>
+        <p>Never guess CSV formats &mdash; always start from a Fishbowl export.</p>
+        <p class="src">Source: Remington Supply &mdash; FBA Transfer Order SOP (Warehouse &rarr; Amazon)</p>
+      </div>
+    </details>
+
+    <details class="card" data-cat="Manufacturing">
+      <summary>
+        <span class="q-tag">SOP</span>
+        <span class="q-text">Issue, pick, and ship the FBA Transfer Order (don't strand a line)</span>
+        <svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg>
+      </summary>
+      <div class="answer">
+        <p>Issue &rarr; Pick &rarr; Ship as normal. One critical check before you finish:</p>
+        <div class="note">
+          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 8v5"/><circle cx="12" cy="16.5" r=".5" fill="currentColor"/><path d="M12 3 2 21h20z"/></svg>
+          <div>Before finishing the <strong>Ship</strong> step, confirm <strong>every line made it into the carton(s)</strong>. A line dropped between pick and pack strands its units in a committed state that support has to fix at the database level (this happened with <strong>PS-SPG-32OZ on TO 062926</strong>).</div>
+        </div>
+        <p class="src">Source: Remington Supply &mdash; FBA Transfer Order SOP (Warehouse &rarr; Amazon)</p>
+      </div>
+    </details>
+
+    <details class="card" data-cat="Manufacturing">
+      <summary>
+        <span class="q-tag">SOP</span>
+        <span class="q-text">Receive &amp; reconcile the TO for true landed cost (do NOT skip)</span>
+        <svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg>
+      </summary>
+      <div class="answer">
+        <p class="step-head">Receive</p>
+        <div class="note">
+          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 8v5"/><circle cx="12" cy="16.5" r=".5" fill="currentColor"/><path d="M12 3 2 21h20z"/></svg>
+          <div>In Receiving, change the receive location from the default <strong>&ldquo;Receiving&rdquo;</strong> bin to <strong>&ldquo;Amazon FBA Inbound&rdquo;</strong> (the main bin). The automation only drains the main bin &mdash; stock left in the Receiving sub-bin is invisible to it.</div>
+        </div>
+        <p class="step-head">Reconcile (landed cost)</p>
+        <ol class="steps">
+          <li>Receiving module &rarr; open the receipt &rarr; <kbd>Reconcile</kbd> tab.</li>
+          <li>Add two cost lines from the shipment in Seller Central: <strong>Inbound placement service fees</strong> and <strong>Amazon partnered carrier cost</strong>.</li>
+          <li>Distribution method = <strong>Weight</strong> &rarr; save. This spreads freight into each SKU's unit cost so margin reports carry true landed cost.</li>
+          <li>Put the <strong>FBA Shipment ID</strong> (e.g. <kbd>FBA19HZDX8C7</kbd>) in the TO <strong>note field</strong> &mdash; it's the match key for reconciliation and the receiving automation.</li>
+        </ol>
+        <p class="src">Source: Remington Supply &mdash; FBA Transfer Order SOP (Warehouse &rarr; Amazon)</p>
+      </div>
+    </details>
+
+    <details class="card" data-cat="Manufacturing">
+      <summary>
+        <span class="q-tag">SOP</span>
+        <span class="q-text">FBA Transfer Order: what should I NEVER do?</span>
+        <svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg>
+      </summary>
+      <div class="answer">
+        <ul class="reasons">
+          <li>&#10060; <b>Never do a bulk &ldquo;Inventory quantities import&rdquo; against the Amazon location groups.</b> A 6/18&ndash;6/19 import fabricated <strong>~19,000 phantom units</strong> and took a full-day reconciliation to unwind. Amazon locations are owned by the automation + the daily <strong>3:05 PM drift check</strong>.</li>
+          <li>&#10060; <b>Don't use Move Inventory imports as a substitute for the TO flow</b> when freight needs to be capitalized &mdash; moves carry cost as-is, with no reconcile hook.</li>
+          <li>&#10060; <b>Don't receive into the default &ldquo;Receiving&rdquo; sub-bin</b> of the Amazon groups.</li>
+        </ul>
+        <p>After receive, stock sits in <strong>Amazon FBA Inbound</strong> until Amazon checks it in; the auto-move then shifts it to <strong>Amazon FBA</strong> automatically. If Fishbowl and Amazon disagree, the daily drift check emails Adam.</p>
+        <p class="src">Source: Remington Supply &mdash; FBA Transfer Order SOP (Warehouse &rarr; Amazon)</p>
+      </div>
+    </details>
+
     <!-- ============ AMAZON FBA ============ -->
     <div class="group-label" data-group="Amazon">Amazon FBA Orders</div>
 
